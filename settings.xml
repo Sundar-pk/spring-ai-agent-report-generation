@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Maven Settings — Artifactory Mirror Template
+  ─────────────────────────────────────────────────────────────────────────────
+  USAGE:
+    Copy this file to ~/.m2/settings.xml on the demo / build machine, OR
+    pass it explicitly at build time:
+      mvn clean package -s settings.xml
+
+  WHAT TO FILL IN:
+    1. Replace ARTIFACTORY_BASE_URL with your organisation's Artifactory URL,
+       e.g.  http://artifactory.bank.local/artifactory
+    2. Replace ARTIFACTORY_REPO_KEY with the virtual repository key that
+       mirrors Maven Central AND Spring Milestones, e.g. "libs-release" or "all-repos".
+    3. Replace ARTIFACTORY_USERNAME and ARTIFACTORY_PASSWORD with your
+       Artifactory credentials (or use an API token as the password).
+  ─────────────────────────────────────────────────────────────────────────────
+-->
+<settings xmlns="http://maven.apache.org/SETTINGS/1.2.0"
+          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+          xsi:schemaLocation="http://maven.apache.org/SETTINGS/1.2.0
+              https://maven.apache.org/xsd/settings-1.2.0.xsd">
+
+    <servers>
+        <!-- Credentials for the Artifactory mirror -->
+        <server>
+            <id>artifactory-mirror</id>
+            <username>ARTIFACTORY_USERNAME</username>
+            <password>ARTIFACTORY_PASSWORD</password>
+        </server>
+    </servers>
+
+    <mirrors>
+        <!--
+          Route ALL repository lookups through Artifactory.
+          The virtual repo at ARTIFACTORY_REPO_KEY must proxy:
+            - Maven Central  (https://repo1.maven.org/maven2)
+            - Spring Milestones (https://repo.spring.io/milestone)
+          so that Spring AI 1.0.0-M6 and all Spring Boot jars resolve correctly.
+        -->
+        <mirror>
+            <id>artifactory-mirror</id>
+            <name>Internal Artifactory Mirror</name>
+            <url>ARTIFACTORY_BASE_URL/ARTIFACTORY_REPO_KEY</url>
+            <!-- '*' means: mirror every repository declared anywhere in pom.xml -->
+            <mirrorOf>*</mirrorOf>
+        </mirror>
+    </mirrors>
+
+    <profiles>
+        <profile>
+            <id>artifactory</id>
+            <repositories>
+                <repository>
+                    <id>artifactory-central</id>
+                    <name>Artifactory — All Repos</name>
+                    <url>ARTIFACTORY_BASE_URL/ARTIFACTORY_REPO_KEY</url>
+                    <releases>
+                        <enabled>true</enabled>
+                    </releases>
+                    <snapshots>
+                        <enabled>false</enabled>
+                    </snapshots>
+                </repository>
+            </repositories>
+            <pluginRepositories>
+                <pluginRepository>
+                    <id>artifactory-plugins</id>
+                    <name>Artifactory — Plugin Repos</name>
+                    <url>ARTIFACTORY_BASE_URL/ARTIFACTORY_REPO_KEY</url>
+                    <releases>
+                        <enabled>true</enabled>
+                    </releases>
+                    <snapshots>
+                        <enabled>false</enabled>
+                    </snapshots>
+                </pluginRepository>
+            </pluginRepositories>
+        </profile>
+    </profiles>
+
+    <activeProfiles>
+        <activeProfile>artifactory</activeProfile>
+    </activeProfiles>
+
+</settings>
