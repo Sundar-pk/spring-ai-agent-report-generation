@@ -73,6 +73,13 @@
             <artifactId>httpclient5</artifactId>
         </dependency>
 
+        <!-- Apache PDFBox: PDF generation for loan report download (Apache 2.0 license) -->
+        <dependency>
+            <groupId>org.apache.pdfbox</groupId>
+            <artifactId>pdfbox</artifactId>
+            <version>3.0.3</version>
+        </dependency>
+
         <!-- Test -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
